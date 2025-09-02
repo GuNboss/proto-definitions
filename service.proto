@@ -1,0 +1,297 @@
+syntax = "proto3";
+
+package oepackage;
+
+// service FiveGCoreService {
+//     rpc getSystemConfig (FiveGCoreTypes.SystemConfig) returns (FiveGCoreTypes.SystemConfigList);
+// }
+
+service DeviceService {
+    rpc getElements(Empty) returns (ElementList);
+    rpc getConfiguration(ElementID) returns (ConfigurationList);
+    rpc getConfigurationChanged(ElementID) returns (stream ConfigurationList);
+    // rpc getConfiguration(ElementID, parent) returns (ConfigurationList);
+    // grpc://192.168.1.111:50050/henb_id=1/InternetGatewayDevice.DeviceInfo.DeviceCategory
+    // grpc://192.168.1.111:50050/henb_id=2/InternetGatewayDevice.DeviceInfo.DeviceCategory
+    // grpc://192.168.61.210:50050/hostname=UNPKO-EPC-1/AMF.TRANSPORT_LAYER_INFO.AMF_INTERFACE_NAME
+    rpc setConfiguration(SetConfigurationRequest) returns (SetConfigurationResponse);
+
+    //LOG
+    rpc getLogs(ElementID) returns (LogList);
+    rpc getLogsChanged(ElementID) returns (stream LogList);
+
+    //DIVICE
+    rpc getDevice(DeviceRequest) returns (Device);
+    rpc getDevices(DeviceParams) returns (DeviceList);
+
+    //ALARM
+    rpc getAlarms(ElementID) returns (AlarmList);
+}
+// gprc://192.168.61.210:50050
+// grpc://192.168.61.8:50050
+// 5GC, 
+// grpc://
+
+message Empty {}
+
+message ElementList {
+    repeated Element elements = 1;
+}
+
+message ConfigurationList {
+    repeated Configuration configurations = 1;
+}
+
+message DeviceRequest {
+    string id           = 1;
+    string TBLName      = 2;
+    string deviceId     = 3;
+}
+
+message DeviceList {
+    repeated Device devices = 1;
+    string cnt = 2;
+}
+
+message Device {
+    string henb_id = 1;
+    string logical_henb_id = 2;
+    string side = 3;
+    string active_flag = 4;
+    string hems_id = 5;
+    string serial_number = 6;
+    string oui = 7;
+    string henb_name = 8;
+    string ne_id = 9;
+    string device_type_id = 10;
+    string mgmt_ip = 11;
+    string mgmt_port = 12;
+    string auto_upgrade_flag = 13;
+    string status = 14;
+    string regist_date = 15;
+    string updated_date = 16;
+    string location_info = 17;
+    string main_area = 18;
+    string sub_area = 19;
+}
+
+message SetConfigurationRequest {
+    Element element = 1;
+    ConfigurationName configurationName = 2;
+    ConfigurationValue configurationValue = 3;
+}
+
+message SetConfigurationResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+message Element {
+    string id = 1;
+    string name = 2;
+    string type = 3;
+    string model = 4;
+    string version = 5;
+    string tag = 6;
+    string serverAddress = 7;
+}
+
+// [{id="hostname=UNPKO-EPC-1",type="EPC",name="",gprcAddress=""}]
+// [{id="henb_id=1",type="HeNB",name="LTE-M Test"},{id="henb_id=2",type="HeNB",name="EL2000"}]
+// type => major
+// model => minor
+// version => patch
+// tag: ["seoul,eucast,test,long=34.22,private,"]
+
+message ElementID {
+    string id = 1;
+    string TBLName = 2;
+}
+
+message DeviceParams {
+    string id = 1;
+    string TBLName = 2;
+    string currentPage = 3;
+    string limit = 4;
+    string sortName = 5;
+    string order = 6;
+}
+
+message Param {
+    string currentPage = 1;
+    string limit = 2;
+    string sortName = 3;
+    string order = 4;
+}
+
+message ConfigurationName {
+    string name = 1;
+}
+
+message ConfigurationValue {
+    string value = 1;
+}
+
+message Configuration {
+    string id = 1;
+    string parent = 2;
+    string name = 3;
+    string value = 4;
+    string description = 5;
+}
+
+message AlarmList {
+    repeated Alarm alarms = 1;
+}
+
+message Alarm {
+    oneof alarm_type {
+        GenericAlarm    generic_alarm           =1;
+        CurrentAlarm    current_alarm           =2;    
+    }
+}
+
+message GenericAlarm {
+    string henb_id                  =1;
+    string alarm_code               =2;
+    string event_time               =3;
+    string severity                 =4;
+    string alarm_type               =5;
+}
+
+message CurrentAlarm {
+    string henb_id                  = 1;
+    string henb_name                = 2;
+    string alarm_code               = 3;
+    string alarm_raised_time        = 4;
+    string event_time               = 5;
+    string alarm_type               = 6;
+    string isACK                    = 7;
+    string alarm_loc                = 8;
+    string severity                 = 9;
+    string report_mechanism         = 10;
+    string probable_cause           = 11;
+    string specific_problem         = 12;
+    string additional_text          = 13;
+    string additional_information   = 14;
+}
+
+message LogList {
+    repeated Log logs = 1;
+}
+
+message Log {
+    string date = 1;
+    oneof log_type {
+        GenericLog      generic_log             =2;
+        //OAM LOG
+        OperationLog    dcore_log               =3;
+        WebLog          dcore_web_log           =4;
+        FaultLog        dcore_fault_log         =5;
+        //EMS LOG
+        EventLog        hems_event_log          =6;
+        CLILog          hems_cli_log            =7;
+        GNBLog          hems_gnb_log            =8;
+        CurrentLog      hems_fault_log          =9;
+        Trace           hems_trace              =10;
+    }
+}
+
+message EventLog {
+    string idx                  =1;
+    string henb_id              =2;
+    string event_type           =3;
+    string event_code           =4;
+    string event_code_name      =5;
+    string event_head_str       =6;
+    string event_logfile_name   =7;
+    string context              =8;
+}
+
+message CurrentLog {
+    string alarm_history_no     =1;
+    string henb_id              =2;
+    string alarm_code           =3;
+    string alarm_changed_time   =4;
+    string alarm_cleared_time   =5;
+    string event_time           =6;
+    string alarm_type           =7;
+    string alarm_state          =8;
+    string alarm_loc            =9;
+    string severity             =10;
+    string report_mechanism     =11;
+    string probable_cause       =12;
+    string specific_problem     =13;
+    string additional_text      =14;
+    string additional_information =15;
+}
+
+message CLILog {
+    string command_history_no       =1;
+    string command_id               =2;
+    string command_alias            =3;
+    string user_id                  =4;
+    string user_ip                  =5;
+    string henb_id                  =6;
+    string request_time             =7;
+    string response_time            =8;
+    string result                   =9;
+    string fail_reason              =10;
+    string command_head_str         =11;
+    string command_logfile_name     =12;
+    string context                  =13;
+    string transaction_id           =14;
+}
+
+message GNBLog {
+    string device_history_no        =1;
+    string henb_id                  =2;
+    string hems_id                  =3;
+    string serial_sumber            =4;
+    string oui                      =5;
+    string henb_name                =6;
+    string device_type_id           =7;
+    string operation_flag           =8;
+    string operation_time           =9;
+    string operation_user_id        =10;
+}
+
+message Trace {
+
+}
+
+message GenericLog {
+    string timestamp    = 1;
+    string source       = 2;
+    string level        = 3;
+    string message      = 4;
+    string labels       = 5;
+}
+
+
+message OperationLog {
+    string idx          = 1;
+    string module       = 2;
+    string message      = 3;
+    string level        = 4;
+}
+
+message WebLog {
+    string idx          = 1;
+    string username     = 2;
+    string event        = 3;
+}
+
+message FaultLog {
+    string idx          = 1;
+    string module       = 2;
+    string code         = 3;
+    string event        = 4;
+    string message      = 5;
+    string level        = 6;
+    string readCheck    = 7;
+}
+
+// id=AMF.AMF_INTERFACE_NAME, parent=SystemConfig., name=AMF_INTERFACE_NAME, description="fff"
+// id=InternetGatewayDevice.DeviceInfo.DeviceCategory, parent=InternetGatewayDevice.DeviceInfo., name=DeviceCategory, 
+// id=5GC, parent=InternetGatewayDevice.DeviceInfo., name=DeviceCategory, 
