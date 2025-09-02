@@ -2,126 +2,94 @@ syntax = "proto3";
 
 package oepackage;
 
-// service FiveGCoreService {
-//     rpc getSystemConfig (FiveGCoreTypes.SystemConfig) returns (FiveGCoreTypes.SystemConfigList);
-// }
-
 service DeviceService {
     rpc getElements(Empty) returns (ElementList);
     rpc getConfiguration(ElementID) returns (ConfigurationList);
-    rpc getConfigurationChanged(ElementID) returns (stream ConfigurationList);
-    // rpc getConfiguration(ElementID, parent) returns (ConfigurationList);
-    // grpc://192.168.1.111:50050/henb_id=1/InternetGatewayDevice.DeviceInfo.DeviceCategory
-    // grpc://192.168.1.111:50050/henb_id=2/InternetGatewayDevice.DeviceInfo.DeviceCategory
-    // grpc://192.168.61.210:50050/hostname=UNPKO-EPC-1/AMF.TRANSPORT_LAYER_INFO.AMF_INTERFACE_NAME
+    rpc getConfigurationChanged(ConfigurationChangedRequest) returns (stream ConfigurationList);
+
     rpc setConfiguration(SetConfigurationRequest) returns (SetConfigurationResponse);
 
     //LOG
     rpc getLogs(ElementID) returns (LogList);
-    rpc getLogsChanged(ElementID) returns (stream LogList);
+    rpc getLogsChanged(LogChangedRequest) returns (stream LogList);
 
     //DIVICE
-    rpc getDevice(DeviceRequest) returns (Device);
-    rpc getDevices(DeviceParams) returns (DeviceList);
+    // rpc getDevice(DeviceRequest) returns (Device);
+    // rpc getDevices(DeviceParams) returns (DeviceList);
 
     //ALARM
     rpc getAlarms(ElementID) returns (AlarmList);
 }
-// gprc://192.168.61.210:50050
-// grpc://192.168.61.8:50050
-// 5GC, 
-// grpc://
 
 message Empty {}
 
 message ElementList {
-    repeated Element elements = 1;
+    repeated Element elements   = 1;
 }
 
 message ConfigurationList {
     repeated Configuration configurations = 1;
 }
 
-message DeviceRequest {
-    string id           = 1;
-    string TBLName      = 2;
-    string deviceId     = 3;
-}
+// message DeviceRequest {
+//     string id           = 1;
+//     string deviceId     = 2;
+// }
 
-message DeviceList {
-    repeated Device devices = 1;
-    string cnt = 2;
-}
+// message DeviceList {
+//     repeated Device devices = 1;
+//     string cnt = 2;
+// }
 
-message Device {
-    string henb_id = 1;
-    string logical_henb_id = 2;
-    string side = 3;
-    string active_flag = 4;
-    string hems_id = 5;
-    string serial_number = 6;
-    string oui = 7;
-    string henb_name = 8;
-    string ne_id = 9;
-    string device_type_id = 10;
-    string mgmt_ip = 11;
-    string mgmt_port = 12;
-    string auto_upgrade_flag = 13;
-    string status = 14;
-    string regist_date = 15;
-    string updated_date = 16;
-    string location_info = 17;
-    string main_area = 18;
-    string sub_area = 19;
-}
+// message Device {
+//     string henb_id = 1;
+//     string logical_henb_id = 2;
+//     string side = 3;
+//     string active_flag = 4;
+//     string hems_id = 5;
+//     string serial_number = 6;
+//     string oui = 7;
+//     string henb_name = 8;
+//     string ne_id = 9;
+//     string device_type_id = 10;
+//     string mgmt_ip = 11;
+//     string mgmt_port = 12;
+//     string auto_upgrade_flag = 13;
+//     string status = 14;
+//     string regist_date = 15;
+//     string updated_date = 16;
+//     string location_info = 17;
+//     string main_area = 18;
+//     string sub_area = 19;
+// }
 
 message SetConfigurationRequest {
-    Element element = 1;
-    ConfigurationName configurationName = 2;
-    ConfigurationValue configurationValue = 3;
+    Element element                         = 1;
+    ConfigurationName configurationName     = 2;
+    ConfigurationValue configurationValue   = 3;
 }
 
 message SetConfigurationResponse {
-    bool success = 1;
-    string message = 2;
+    bool success    = 1;
+    string message  = 2;
+}
+
+message ConfigurationChangedRequest {
+    string start_timestamp = 1;          // ISO 8601 표준
 }
 
 message Element {
-    string id = 1;
-    string name = 2;
-    string type = 3;
-    string model = 4;
-    string version = 5;
-    string tag = 6;
-    string serverAddress = 7;
+    string id               = 1;
+    string name             = 2;
+    string type             = 3;
+    string model            = 4;
+    string version          = 5;
+    string tag              = 6;
+    string serverAddress    = 7;
 }
-
-// [{id="hostname=UNPKO-EPC-1",type="EPC",name="",gprcAddress=""}]
-// [{id="henb_id=1",type="HeNB",name="LTE-M Test"},{id="henb_id=2",type="HeNB",name="EL2000"}]
-// type => major
-// model => minor
-// version => patch
-// tag: ["seoul,eucast,test,long=34.22,private,"]
 
 message ElementID {
     string id = 1;
-    string TBLName = 2;
-}
-
-message DeviceParams {
-    string id = 1;
-    string TBLName = 2;
-    string currentPage = 3;
-    string limit = 4;
-    string sortName = 5;
-    string order = 6;
-}
-
-message Param {
-    string currentPage = 1;
-    string limit = 2;
-    string sortName = 3;
-    string order = 4;
 }
 
 message ConfigurationName {
@@ -133,11 +101,11 @@ message ConfigurationValue {
 }
 
 message Configuration {
-    string id = 1;
-    string parent = 2;
-    string name = 3;
-    string value = 4;
-    string description = 5;
+    string id           = 1;
+    string parent       = 2;
+    string name         = 3;
+    string value        = 4;
+    string description  = 5;
 }
 
 message AlarmList {
@@ -195,6 +163,10 @@ message Log {
         CurrentLog      hems_fault_log          =9;
         Trace           hems_trace              =10;
     }
+}
+
+message LogChangedRequest {
+    string start_timestamp      =1;     // ISO 8601 표준
 }
 
 message EventLog {
@@ -292,6 +264,3 @@ message FaultLog {
     string readCheck    = 7;
 }
 
-// id=AMF.AMF_INTERFACE_NAME, parent=SystemConfig., name=AMF_INTERFACE_NAME, description="fff"
-// id=InternetGatewayDevice.DeviceInfo.DeviceCategory, parent=InternetGatewayDevice.DeviceInfo., name=DeviceCategory, 
-// id=5GC, parent=InternetGatewayDevice.DeviceInfo., name=DeviceCategory, 
