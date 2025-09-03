@@ -21,6 +21,7 @@ service DeviceService {
 
     //ALARM
     rpc getAlarms(ElementID) returns (AlarmList);
+    rpc getAlarmsChanged(AlarmChangedRequest) returns (stream AlarmList);
 }
 
 message Empty {}
@@ -77,7 +78,7 @@ message SetConfigurationResponse {
 }
 
 message ConfigurationChangedRequest {
-    google.protobuf.Timestamp start_timestamp = 1;          // ISO 8601 표준
+    google.protobuf.Timestamp start_timestamp = 1;
 }
 
 message Element {
@@ -119,6 +120,10 @@ message Alarm {
         GenericAlarm    generic_alarm           =1;
         CurrentAlarm    current_alarm           =2;    
     }
+}
+
+message AlarmChangedRequest {
+    google.protobuf.Timestamp start_timestamp      =1;
 }
 
 message GenericAlarm {
@@ -168,7 +173,7 @@ message Log {
 }
 
 message LogChangedRequest {
-    google.protobuf.Timestamp start_timestamp      =1;     // ISO 8601 표준
+    google.protobuf.Timestamp start_timestamp      =1;
 }
 
 message EventLog {
