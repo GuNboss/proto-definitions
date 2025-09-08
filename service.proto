@@ -89,6 +89,7 @@ message Element {
     string version          = 5;
     string tag              = 6;
     string serverAddress    = 7;
+    string status           = 8;
 }
 
 message ElementID {
