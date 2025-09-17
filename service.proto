@@ -67,14 +67,19 @@ message ConfigurationList {
 // }
 
 message SetConfigurationRequest {
-    Element element                         = 1;
-    ConfigurationName configurationName     = 2;
-    ConfigurationValue configurationValue   = 3;
+    ElementID                       elementID               = 1;
+    repeated ConfigurationIdValue   ConfigurationIdValue    = 2;
+}
+
+message ConfigurationIdValue {
+    string id           = 1;
+    string value        = 2;
 }
 
 message SetConfigurationResponse {
-    bool success    = 1;
-    string message  = 2;
+    bool                    success         = 1;
+    string                  message         = 2;
+    repeated Configuration  configurations  = 3;
 }
 
 message ConfigurationChangedRequest {
@@ -96,13 +101,13 @@ message ElementID {
     string id = 1;
 }
 
-message ConfigurationName {
-    string name = 1;
-}
+// message ConfigurationName {
+//     string name = 1;
+// }
 
-message ConfigurationValue {
-    string value = 1;
-}
+// message ConfigurationValue {
+//     string value = 1;
+// }
 
 message Configuration {
     string id           = 1;
