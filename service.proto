@@ -22,9 +22,31 @@ service DeviceService {
     //ALARM
     rpc getAlarms(ElementID) returns (AlarmList);
     rpc getAlarmsChanged(AlarmChangedRequest) returns (stream AlarmList);
+
+    //STATE
+    rpc getServerState(Empty) returns (ServerState);
+
+    //PACKAGE
+    rpc getPackages(Empty) returns (PackageList);
+
+    //중복체크
+    rpc checkNcid(CheckRequest) returns (CheckResponse);
+    rpc checkSerialNumber(CheckRequest) returns (CheckResponse);
+    rpc checkNeid(CheckRequest) returns (CheckResponse);
+    rpc checkDeviceName(CheckRequest) returns (CheckResponse);
 }
 
 message Empty {}
+
+// Common Response
+message CheckResponse {
+    bool isDuplicate    = 1;
+    string message      = 2;
+}
+
+message CheckRequest {
+    string value    = 1;
+}
 
 message ElementList {
     repeated Element elements   = 1;
@@ -277,3 +299,25 @@ message FaultLog {
     string readCheck    = 7;
 }
 
+message ServerState {
+    string date             = 1;
+    string server_address   = 2;
+    string cpu_util         = 3;
+    string memory_util      = 4;
+    string disk_util        = 5;
+}
+
+message PackageList {
+    repeated Package packages = 1;
+}
+
+message Package {
+    string package_no           = 1;
+    string package_file_name    = 2;
+    string package_version      = 3;
+    string model_name           = 4;
+    string firmware_version     = 5;
+    string software_version     = 6;
+    string released_date        = 7;
+    string active_flag          = 8;
+}
