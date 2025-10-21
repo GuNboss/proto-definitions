@@ -383,7 +383,7 @@ message NodeBLog {
     string device_history_no        =1;
     string element_id               =2;
     string hems_id                  =3;
-    string serial_sumber            =4;
+    string serial_number            =4;
     string oui                      =5;
     string element_name             =6;
     string device_type_id           =7;
