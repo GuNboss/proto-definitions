@@ -30,151 +30,22 @@ service DeviceService {
     rpc getPackages(Empty) returns (PackageList);
 
     //중복체크
-    rpc checkDuplicate(CheckRequest) returns (CheckResponse);
-
-// =================== RPC 추가 =========================
-    //LOGIN
-    rpc login(LoginRequest) returns (LoginResponse);                            // 로그인 API
-
-    //CLI
-    rpc getCLIs(ElementID) returns (CLIList);                                   // CLI 목록 조회
-
-    //PLD   
-    rpc getPLDs(ElementID) returns (PLDList);                                   // PLD 목록 조회                          
-
-    //NEIGHBOR
-    rpc getNeighbor(ElementID) returns (NeighborList);                          // Neighbor 목록 조회
-
-    //모듈 재시작 (AMF, SMF, UPF, UDP, System, DNN, Support_GNB, HSS, MME, PGW, SGW)
-    rpc moduleRestart(ModuleRestartRequest) returns (ModuleRestartResponse);    // 모듈 재시작
-
-    //라이센스 조회
-    // rpc getLicense(Empty) returns ();
-
-    //UE 조회
-    rpc getUEs(Empty) returns (UEList);
-
-// ===================RPC 추가 끝=========================
-
-
+    rpc checkNcid(CheckRequest) returns (CheckResponse);
+    rpc checkSerialNumber(CheckRequest) returns (CheckResponse);
+    rpc checkNeid(CheckRequest) returns (CheckResponse);
+    rpc checkDeviceName(CheckRequest) returns (CheckResponse);
 }
-
-// ===================메세지 추가=========================
-
-message LoginRequest {
-    string id           = 1;
-    string password     = 2;
-}
-
-message LoginResponse {
-    bool isLogin        = 1;
-    string message      = 2;
-    string token        = 3;
-}
-
-message CLIList {
-    repeated CLINode nodes      = 1;        // CLI 노드
-}
-
-message CLINode {
-    string command_alias                = 1;
-    string command_timeout              = 2;
-    string command_target               = 3;
-    string job_group                    = 4;
-    string description                  = 5;
-
-    repeated CLIParameter parameters    = 6;            // CLIParameter는 따로 rpc 요청하는 식으로
-}
-
-message CLIParameter {
-    string parameter_name               = 1;
-    string parameter_alias              = 2;
-    string parameter_type               = 3;
-    string parameter_default_value      = 4;
-    string value_range_start            = 5;
-    string value_range_end              = 6;
-}
-
-message PLDList {
-    repeated PLDParameger parameters    = 1;
-}
-
-message PLDParameger {
-    int32  device_id                    = 1;                // 기지국 아이디
-    int32  parameter_id                 = 2;                // 파라미터 아이디 
-    string parameter_name               = 3;                // 파라미터 이름
-    string parameter_value              = 4;                // 값
-    string parameter_type               = 5;                // 타입
-    string value_range_start            = 6;                // 시작 범위
-    string value_range_end              = 7;                // 끝 범위
-    string is_unit                      = 8;                // 단위
-    string is_pld                       = 9;                // PLD유무
-    string read_write                   = 10;               // 읽기/쓰기
-}
-
-message NeighborList {
-    repeated Neighbor neighbors         = 1;
-}
-
-message Neighbor {
-    string device_id                    = 1;
-    string device_name                  = 2;
-    string index                        = 3;
-    string id                           = 4;
-    string isESCoveredBy                = 5;
-    string isHOAllowed                  = 6;
-    string ps_gnb_id                    = 7;
-    string ps_gnb_id_length             = 8;
-    string ps_cell_localld              = 9;
-    string ps_nRPCI                     = 10;
-    string ps_nRTAC                     = 11;
-    string ps_mcc                       = 12;
-    string ps_mnc                       = 13;
-}
-
-message ModuleRestartRequest {
-    string name             = 1;                // 소문자 + 스네이크 케이스로 표기  => ex) "smf", "amf", "support_gnb", "system"
-}
-
-message ModuleRestartResponse {
-    bool   success          = 1;
-    string message          = 2;
-}
-
-message UEList {
-    repeated UE ues         = 1;
-}
-
-message UE {
-    string core_name        = 1;
-    string core_type        = 2;
-    string imsi_supi        = 3;
-    string msisdn           = 4;
-    string gk               = 5;
-    string op               = 6;
-    string op_flag          = 7;
-    string apencxtld        = 8;
-    string ul_ambr          = 9;
-    string dl_ambr          = 10;
-    string plmn             = 11;
-    string qci              = 12;
-    string amf              = 13;
-    string imei             = 14;
-}
-
-// ===================메세지 추가 끝=========================
 
 message Empty {}
 
 // Common Response
 message CheckResponse {
-    bool is_duplicate   = 1;
+    bool isDuplicate    = 1;
     string message      = 2;
 }
 
 message CheckRequest {
-    string name     = 1;        // "ncid", "neid", "serial_number", "device_name"
-    string value    = 2;
+    string value    = 1;
 }
 
 message ElementList {
@@ -284,7 +155,7 @@ message AlarmChangedRequest {
 }
 
 message GenericAlarm {
-    string element_id               =1;
+    string henb_id                  =1;
     string alarm_code               =2;
     string event_time               =3;
     string severity                 =4;
@@ -292,8 +163,8 @@ message GenericAlarm {
 }
 
 message CurrentAlarm {
-    string element_id               = 1;
-    string element_name             = 2;
+    string henb_id                  = 1;
+    string henb_name                = 2;
     string alarm_code               = 3;
     string alarm_raised_time        = 4;
     string event_time               = 5;
@@ -317,15 +188,15 @@ message Log {
     oneof log_type {
         GenericLog      generic_log             =2;
         //OAM LOG
-        OperationLog    operation_log           =3;
-        WebLog          web_log                 =4;
-        FaultLog        fault_log               =5;
+        OperationLog    dcore_log               =3;
+        WebLog          dcore_web_log           =4;
+        FaultLog        dcore_fault_log         =5;
         //EMS LOG
-        EventLog        event_log               =6;
-        CLILog          cli_log                 =7;
-        GNBLog          gnb_log                 =8;
-        CurrentLog      fault_log               =9;
-        Trace           trace                   =10;
+        EventLog        hems_event_log          =6;
+        CLILog          hems_cli_log            =7;
+        GNBLog          hems_gnb_log            =8;
+        CurrentLog      hems_fault_log          =9;
+        Trace           hems_trace              =10;
     }
 }
 
@@ -335,7 +206,7 @@ message LogChangedRequest {
 
 message EventLog {
     string idx                  =1;
-    string element_id           =2;
+    string henb_id              =2;
     string event_type           =3;
     string event_code           =4;
     string event_code_name      =5;
@@ -346,7 +217,7 @@ message EventLog {
 
 message CurrentLog {
     string alarm_history_no     =1;
-    string element_id           =2;
+    string henb_id              =2;
     string alarm_code           =3;
     string alarm_changed_time   =4;
     string alarm_cleared_time   =5;
@@ -368,7 +239,7 @@ message CLILog {
     string command_alias            =3;
     string user_id                  =4;
     string user_ip                  =5;
-    string element_id               =6;
+    string henb_id                  =6;
     string request_time             =7;
     string response_time            =8;
     string result                   =9;
@@ -379,13 +250,13 @@ message CLILog {
     string transaction_id           =14;
 }
 
-message NodeBLog {
+message GNBLog {
     string device_history_no        =1;
-    string element_id               =2;
+    string henb_id                  =2;
     string hems_id                  =3;
     string serial_sumber            =4;
     string oui                      =5;
-    string element_name             =6;
+    string henb_name                =6;
     string device_type_id           =7;
     string operation_flag           =8;
     string operation_time           =9;
@@ -414,7 +285,7 @@ message OperationLog {
 
 message WebLog {
     string idx          = 1;
-    string user_name     = 2;
+    string username     = 2;
     string event        = 3;
 }
 
@@ -425,16 +296,16 @@ message FaultLog {
     string event        = 4;
     string message      = 5;
     string level        = 6;
-    string read_check   = 7;
+    string readCheck    = 7;
 }
 
-// message ServerState {                    // oam => configuration 참조
-//     string date             = 1;         // ems => 제외
-//     string server_address   = 2;
-//     string cpu_util         = 3;
-//     string memory_util      = 4;
-//     string disk_util        = 5;
-// }
+message ServerState {
+    string date             = 1;
+    string server_address   = 2;
+    string cpu_util         = 3;
+    string memory_util      = 4;
+    string disk_util        = 5;
+}
 
 message PackageList {
     repeated Package packages = 1;
