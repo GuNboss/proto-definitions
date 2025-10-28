@@ -59,7 +59,12 @@ message GetConfigurationRequest {
 }
 
 message GetConfigurationsResponse {
-    repeated Configuration configurations = 1;
+    repeated ElementAlarms response = 1;
+
+    message ElementAlarms {
+        ElementID element = 1;
+        repeated Configuration configurations = 2;
+    }
 }
 
 message GetElementConfigurationsRequest {
@@ -67,7 +72,12 @@ message GetElementConfigurationsRequest {
 }
 
 message GetAlarmsResponse {
-    repeated Alarm alarms = 1;
+    repeated ElementAlarms response = 1;
+
+    message ElementAlarms {
+        ElementID element = 1;
+        repeated Alarm alarms = 2;
+    }
 }
 
 message GetElementAlarmsRequest {
@@ -75,7 +85,12 @@ message GetElementAlarmsRequest {
 }
 
 message GetLogsResponse {
-    repeated Log logs = 1;
+    repeated ElementLogs response = 1;
+
+    message ElementLogs {
+        ElementID element = 1;
+        repeated Log logs = 2;
+    }
 }
 
 message GetElementLogsRequest {
