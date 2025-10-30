@@ -120,9 +120,11 @@ message Element {
     string type             = 3;
     string model            = 4;
     string version          = 5;
-    string tag              = 6;
     string serverAddress    = 7;
     string status           = 8;
+    map<string,string> labels   = 1001;
+    map<string,string> extra    = 1111;
+
 
     /// Element Identifier
     message ElementID {
@@ -137,6 +139,9 @@ message Configuration {
     string name         = 3;
     string value        = 4;
     string description  = 5;
+    TypeID type         = 6;
+    map<string,string> labels   = 1001;
+    map<string,string> extra    = 1111;
 
     /// Configuration Identifier
     message ConfigurationID {
@@ -147,6 +152,8 @@ message Configuration {
 
 message Type {
     string id = 1;
+    map<string,string> labels   = 1001;
+    map<string,string> extra    = 1111;
 
     /// Type Identifier
     message TypeID {
@@ -157,10 +164,17 @@ message Type {
 
 message Command {
     string id = 1;
+    repeated CommandParameter parameters = 2;
+    map<string,string> labels   = 1001;
+    map<string,string> extra    = 1111;
 
     /// Command Identifier
     message CommandID {
         string id = 1;
+    }
+    message CommandParameter {
+        TypeID  type            = 1;
+        string  optionality     = 2;
     }
 }
 
@@ -170,6 +184,8 @@ message Alarm {
         GenericAlarm    generic_alarm           =1;
         CurrentAlarm    current_alarm           =2;    
     }
+    map<string,string> labels   = 1001;
+    map<string,string> extra    = 1111;
 
 
     //// Embedded Messages ////
@@ -213,6 +229,8 @@ message Log {
         NodeBLog        nodeb_log               =8;
         CurrentLog      ems_fault_log           =9;
     }
+    map<string,string> labels   = 1001;
+    map<string,string> extra    = 1111;
 
 
     //// Embedded Messages ////
@@ -276,7 +294,6 @@ message Log {
         string source       = 2;
         string level        = 3;
         string message      = 4;
-        string labels       = 5;
     }
     message OperationLog {
         string idx          = 1;
