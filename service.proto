@@ -7,111 +7,146 @@ import "google/protobuf/timestamp.proto";
 
 service ElementService {
 
-    rpc listElements(Empty) returns (ListElementsResponse);
-    rpc getElement(GetElementRequest) returns (Element);
-    rpc getElements(Empty) returns (GetElementsResponse);
-    
+    rpc listElements(ListElementsRequest) returns (ListElementsResponse);
+    rpc getElements(GetElementsRequest) returns (GetElementsResponse);
 
-    rpc listConfigurations(Empty) returns (ListConfigurationsResponse);
-    rpc getConfiguration(GetConfigurationRequest) returns (Configuration);
+
+    rpc listConfigurations(ListConfigurationsRequest) returns (ListConfigurationsResponse);
+    rpc getConfigurations(GetConfigurationsRequest) returns (GetConfigurationsResponse);
     rpc getConfigurationsChangedSince(Timestamp) returns (stream GetConfigurationsResponse);
-    rpc getElementConfigurations(GetElementConfigurationsRequest) returns (GetConfigurationsResponse);
 
 
-    rpc getAlarms(Empty) returns (GetAlarmsResponse);
+    rpc getAlarms(GetAlarmsRequest) returns (GetAlarmsResponse);
     rpc getAlarmsChangedSince(Timestamp) returns (stream GetAlarmsResponse);
-    rpc getElementAlarms(GetElementAlarmsRequest) returns (GetAlarmsResponse);
-    
 
-    rpc getLogs(Empty) returns (GetLogsResponse);
+
+    rpc getLogs(GetLogsRequest) returns (GetLogsResponse);
     rpc getLogsChangedSince(Timestamp) returns (stream GetLogsResponse);
-    rpc getElementLogs(GetElementLogsRequest) returns (GetLogsResponse);
 
 
-    rpc listTypes(Empty) returns (ListTypesResponse);
-    rpc getTypes(Empty) returns (GetTypesResponse);
+    rpc listTypes(ListTypesRequest) returns (ListTypesResponse);
+    rpc getTypes(GetTypesRequest) returns (GetTypesResponse);
 
 
-    rpc listCommands(Empty) returns (ListCommandsResponse);
-    rpc getCommands(Empty) returns (GetCommandsResponse);
+    rpc listCommands(ListCommandsRequest) returns (ListCommandsResponse);
+    rpc getCommands(GetCommandsRequest) returns (GetCommandsResponse);
 }
 
+
+message ListElementsRequest {
+    oneof request_filter {
+        Element         element         = 1;
+    }
+}
 message ListElementsResponse {
-    repeated ElementID elements = 1;
+    repeated ElementID  elements = 1;
 }
 
-message GetElementRequest {
-    ElementID element = 1;
+message GetElementsRequest {
+    oneof request_filter {
+        Element         element         = 1;
+    }
 }
-
 message GetElementsResponse {
-    repeated Element elements = 1;
+    repeated Element    elements = 1;
 }
 
 
+message ListConfigurationsRequest {
+    oneof request_filter {
+        Configuration   configuration   = 1;
+        Element         element         = 2;
+    }
+}
 message ListConfigurationsResponse {
     repeated ConfigurationID configurations = 1;
 }
 
-message GetConfigurationRequest {
-    ElementID element = 1;
-    ConfigurationID configuration = 2;
+message GetConfigurationsRequest {
+    oneof request_filter {
+        Configuration   configuration   = 1;
+        Element         element         = 2;
+    }
 }
-
 message GetConfigurationsResponse {
-    repeated ElementAlarms response = 1;
+    repeated Configurations response = 1;
 
-    message ElementAlarms {
-        ElementID element = 1;
-        repeated Configuration configurations = 2;
+    message Configurations {
+        ElementID               element         = 1;
+        repeated Configuration  configurations  = 2;
     }
 }
 
-message GetElementConfigurationsRequest {
-    ElementID element = 1;
-}
 
+message GetAlarmsRequest {
+    oneof request_filter {
+        Alarm           alarm           = 1;
+        Element         element         = 2;
+    }
+}
 message GetAlarmsResponse {
-    repeated ElementAlarms response = 1;
+    repeated Alarms response = 1;
 
-    message ElementAlarms {
-        ElementID element = 1;
-        repeated Alarm alarms = 2;
+    message Alarms {
+        ElementID       element = 1;
+        repeated Alarm  alarms  = 2;
     }
 }
 
-message GetElementAlarmsRequest {
-    ElementID element = 1;
-}
 
+message GetLogsRequest {
+    oneof request_filter {
+        Log             log             = 1;
+        Element         element         = 2;
+    }
+}
 message GetLogsResponse {
-    repeated ElementLogs response = 1;
+    repeated Logs response = 1;
 
-    message ElementLogs {
-        ElementID element = 1;
-        repeated Log logs = 2;
+    message Logs {
+        ElementID       element = 1;
+        repeated Log    logs    = 2;
     }
 }
 
-message GetElementLogsRequest {
-    ElementID element = 1;
-}    
 
+message ListTypesRequest {
+    oneof request_filter {
+        Type            type            = 1;
+    }
+}
 message ListTypesResponse {
     repeated TypeID types = 1;
 }
 
+message GetTypesRequest {
+    oneof request_filter {
+        Type            type            = 1;
+    }
+}
 message GetTypesResponse {
     repeated Type types = 1;
 }
 
+
+message ListCommandsRequest {
+    oneof request_filter {
+        Command         command         = 1;
+    }
+}
 message ListCommandsResponse {
-    repeated CommandID commands = 1;
+    repeated CommandID  commands = 1;
 }
 
-message GetCommandsResponse {
-    repeated Command commands = 1;
+message GetCommandsRequest {
+    oneof request_filter {
+        Command         command         = 1;
+    }
 }
+message GetCommandsResponse {
+    repeated Command    commands = 1;
+}
+
 
 
 message Element {
