@@ -7,38 +7,39 @@ import "google/protobuf/timestamp.proto";
 
 service ElementService {
 
-    rpc listElements(ListElementsRequest) returns (ListElementsResponse);
-    rpc getElements(GetElementsRequest) returns (GetElementsResponse);
+    rpc listElement(ListElementRequest) returns (ListElementResponse) {}
+    rpc getElements(GetElementsRequest) returns (GetElementsResponse) {}
 
 
-    rpc listConfigurations(ListConfigurationsRequest) returns (ListConfigurationsResponse);
-    rpc getConfigurations(GetConfigurationsRequest) returns (GetConfigurationsResponse);
-    rpc getConfigurationsChangedSince(Timestamp) returns (stream GetConfigurationsResponse);
+    rpc listConfiguration(ListConfigurationRequest) returns (ListConfigurationResponse) {}
+    rpc getConfigurations(GetConfigurationsRequest) returns (GetConfigurationsResponse) {}
+    rpc getConfigurationsModifiedSince(Timestamp) returns (stream GetConfigurationsModifiedResponse) {}
 
 
-    rpc getAlarms(GetAlarmsRequest) returns (GetAlarmsResponse);
-    rpc getAlarmsChangedSince(Timestamp) returns (stream GetAlarmsResponse);
+    rpc getAlarms(GetAlarmsRequest) returns (GetAlarmsResponse) {}
+    rpc getAlarmsModifiedSince(Timestamp) returns (stream GetAlarmsResponse) {}
 
 
-    rpc getLogs(GetLogsRequest) returns (GetLogsResponse);
-    rpc getLogsChangedSince(Timestamp) returns (stream GetLogsResponse);
+    rpc getLogs(GetLogsRequest) returns (GetLogsResponse) {}
+    rpc getLogsModifiedSince(Timestamp) returns (stream GetLogsResponse) {}
 
 
-    rpc listTypes(ListTypesRequest) returns (ListTypesResponse);
-    rpc getTypes(GetTypesRequest) returns (GetTypesResponse);
+    rpc listType(ListTypeRequest) returns (ListTypeResponse) {}
+    rpc getTypes(GetTypesRequest) returns (GetTypesResponse) {}
 
 
-    rpc listCommands(ListCommandsRequest) returns (ListCommandsResponse);
-    rpc getCommands(GetCommandsRequest) returns (GetCommandsResponse);
+    rpc listCommand(ListCommandRequest) returns (ListCommandResponse) {}
+    rpc getCommands(GetCommandsRequest) returns (GetCommandsResponse) {}
+    rpc runCommand(RunCommandRequest) returns (RunCommandResponse) {}
 }
 
 
-message ListElementsRequest {
+message ListElementRequest {
     oneof request_filter {
         Element         element         = 1;
     }
 }
-message ListElementsResponse {
+message ListElementResponse {
     repeated ElementID  elements = 1;
 }
 
@@ -52,13 +53,13 @@ message GetElementsResponse {
 }
 
 
-message ListConfigurationsRequest {
+message ListConfigurationRequest {
     oneof request_filter {
         Configuration   configuration   = 1;
         Element         element         = 2;
     }
 }
-message ListConfigurationsResponse {
+message ListConfigurationResponse {
     repeated ConfigurationID configurations = 1;
 }
 
@@ -70,6 +71,16 @@ message GetConfigurationsRequest {
 }
 message GetConfigurationsResponse {
     repeated Configurations response = 1;
+    Timestamp lastModified = 2;
+
+    message Configurations {
+        ElementID               element         = 1;
+        repeated Configuration  configurations  = 2;
+    }
+}
+message GetConfigurationsModifiedResponse {
+    repeated Configurations response = 1;
+    Timestamp modifiedSince = 2;
 
     message Configurations {
         ElementID               element         = 1;
@@ -110,12 +121,12 @@ message GetLogsResponse {
 }
 
 
-message ListTypesRequest {
+message ListTypeRequest {
     oneof request_filter {
         Type            type            = 1;
     }
 }
-message ListTypesResponse {
+message ListTypeResponse {
     repeated TypeID types = 1;
 }
 
@@ -129,24 +140,33 @@ message GetTypesResponse {
 }
 
 
-message ListCommandsRequest {
+message ListCommandRequest {
     oneof request_filter {
         Command         command         = 1;
+        Element         element         = 2;
     }
 }
-message ListCommandsResponse {
+message ListCommandResponse {
     repeated CommandID  commands = 1;
 }
 
 message GetCommandsRequest {
     oneof request_filter {
         Command         command         = 1;
+        Element         element         = 2;
     }
 }
 message GetCommandsResponse {
     repeated Command    commands = 1;
 }
 
+message RunCommandRequest {
+    CommandID   command = 1;
+    ElementID   element = 2;
+}
+message RunCommandResponse {
+    string      result = 1;
+}
 
 
 message Element {
@@ -175,6 +195,7 @@ message Configuration {
     string value        = 4;
     string description  = 5;
     TypeID type         = 6;
+    Timestamp last_modified = 7;
     map<string,string> labels   = 1001;
     map<string,string> extra    = 1111;
 
@@ -186,9 +207,9 @@ message Configuration {
 
 
 message Type {
-    string id = 1;
     map<string,string> labels   = 1001;
     map<string,string> extra    = 1111;
+    string id = 1;
 
     /// Type Identifier
     message TypeID {
@@ -198,18 +219,18 @@ message Type {
 
 
 message Command {
-    string id = 1;
-    repeated CommandParameter parameters = 2;
     map<string,string> labels   = 1001;
     map<string,string> extra    = 1111;
+    string id = 1;
+    repeated CommandParameter parameters = 2;
 
     /// Command Identifier
     message CommandID {
         string id = 1;
     }
     message CommandParameter {
-        TypeID  type            = 1;
-        string  optionality     = 2;
+        string  optionality     = 1;
+        TypeID  type            = 2;
     }
 }
 
