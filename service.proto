@@ -12,7 +12,7 @@ service ElementService {
 
 
     rpc listConfiguration(ListConfigurationRequest) returns (ListConfigurationResponse) {}
-    rpc getConfigurations(GetConfigurationsRequest) returns (GetConfigurationsResponse) {}
+    rpc getConfigurations(GetConfigurationsRequest) returns (stream GetConfigurationsResponse) {}
     rpc getConfigurationsModifiedSince(Timestamp) returns (stream GetConfigurationsModifiedResponse) {}
 
 
