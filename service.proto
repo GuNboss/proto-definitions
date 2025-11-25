@@ -20,7 +20,7 @@ service ElementService {
     rpc getAlarmsModifiedSince(Timestamp) returns (stream GetAlarmsResponse) {}
 
 
-    rpc getLogs(GetLogsRequest) returns (GetLogsResponse) {}
+    rpc getLogs(GetLogsRequest) returns (stream GetLogsResponse) {}
     rpc getLogsModifiedSince(Timestamp) returns (stream GetLogsResponse) {}
 
 
