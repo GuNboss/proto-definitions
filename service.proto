@@ -67,11 +67,11 @@ message GetConfigurationsRequest {
     oneof request_filter {
         Configuration   configuration   = 1;
         Element         element         = 2;
+        Timestamp       modifiedSince   = 3;
     }
 }
 message GetConfigurationsResponse {
     repeated Configurations response = 1;
-    Timestamp lastModified = 2;
 
     message Configurations {
         ElementID               element         = 1;
@@ -80,7 +80,6 @@ message GetConfigurationsResponse {
 }
 message GetConfigurationsModifiedResponse {
     repeated Configurations response = 1;
-    Timestamp modifiedSince = 2;
 
     message Configurations {
         ElementID               element         = 1;
@@ -93,6 +92,7 @@ message GetAlarmsRequest {
     oneof request_filter {
         Alarm           alarm           = 1;
         Element         element         = 2;
+        Timestamp       modifiedSince   = 3;
     }
 }
 message GetAlarmsResponse {
@@ -109,6 +109,7 @@ message GetLogsRequest {
     oneof request_filter {
         Log             log             = 1;
         Element         element         = 2;
+        Timestamp       modifiedSince   = 3;
     }
 }
 message GetLogsResponse {
