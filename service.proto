@@ -29,7 +29,7 @@ service ElementService {
 
 
     rpc getAlarms(GetAlarmsRequest)
-    returns(GetAlarmsResponse) {
+    returns(stream GetAlarmsResponse) {
     }
 
     rpc getAlarmsModifiedSince(Timestamp)
