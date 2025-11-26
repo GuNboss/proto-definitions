@@ -6,31 +6,66 @@ import "google/protobuf/timestamp.proto";
 
 
 service ElementService {
+    rpc listElement(ListElementRequest)
+    returns(ListElementResponse) {
+    }
 
-    rpc listElement(ListElementRequest) returns (ListElementResponse) {}
-    rpc getElements(GetElementsRequest) returns (GetElementsResponse) {}
-
-
-    rpc listConfiguration(ListConfigurationRequest) returns (ListConfigurationResponse) {}
-    rpc getConfigurations(GetConfigurationsRequest) returns (stream GetConfigurationsResponse) {}
-    rpc getConfigurationsModifiedSince(Timestamp) returns (stream GetConfigurationsModifiedResponse) {}
-
-
-    rpc getAlarms(GetAlarmsRequest) returns (GetAlarmsResponse) {}
-    rpc getAlarmsModifiedSince(Timestamp) returns (stream GetAlarmsResponse) {}
+    rpc getElements(GetElementsRequest)
+    returns(GetElementsResponse) {
+    }
 
 
-    rpc getLogs(GetLogsRequest) returns (stream GetLogsResponse) {}
-    rpc getLogsModifiedSince(Timestamp) returns (stream GetLogsResponse) {}
+    rpc listConfiguration(ListConfigurationRequest)
+    returns(ListConfigurationResponse) {
+    }
+
+    rpc getConfigurations(GetConfigurationsRequest)
+    returns(stream GetConfigurationsResponse) {
+    }
+
+    rpc getConfigurationsModifiedSince(Timestamp)
+    returns(stream GetConfigurationsModifiedResponse) {
+    }
 
 
-    rpc listType(ListTypeRequest) returns (ListTypeResponse) {}
-    rpc getTypes(GetTypesRequest) returns (GetTypesResponse) {}
+    rpc getAlarms(GetAlarmsRequest)
+    returns(stream GetAlarmsResponse) {
+    }
+
+    rpc getAlarmsModifiedSince(Timestamp)
+    returns(stream GetAlarmsResponse) {
+    }
 
 
-    rpc listCommand(ListCommandRequest) returns (ListCommandResponse) {}
-    rpc getCommands(GetCommandsRequest) returns (GetCommandsResponse) {}
-    rpc runCommand(RunCommandRequest) returns (RunCommandResponse) {}
+    rpc getLogs(GetLogsRequest) 
+    returns(stream GetLogsResponse) {
+    }
+
+    rpc getLogsModifiedSince(Timestamp)
+    returns(stream GetLogsResponse) {
+    }
+
+
+    rpc listType(ListTypeRequest)
+    returns(ListTypeResponse) {
+    }
+
+    rpc getTypes(GetTypesRequest)
+    returns(GetTypesResponse) {
+    }
+
+
+    rpc listCommand(ListCommandRequest)
+    returns(ListCommandResponse) {
+    }
+
+    rpc getCommands(GetCommandsRequest)
+    returns(GetCommandsResponse) {
+    }
+
+    rpc runCommand(RunCommandRequest)
+    returns(RunCommandResponse) {
+    }
 }
 
 
