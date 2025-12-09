@@ -199,6 +199,12 @@ message GetCommandsResponse {
 message RunCommandRequest {
     CommandID   command = 1;
     ElementID   element = 2;
+    repeated RunCommandParameter parameters = 3;
+
+    message RunCommandParameter {
+        string name = 1;
+        string value = 2;
+    }
 }
 message RunCommandResponse {
     string      result = 1;
@@ -341,6 +347,7 @@ message Command {
     message CommandParameter {
         string  optionality     = 1;
         TypeID  type            = 2;
+        string  name            = 3;
     }
 }
 
