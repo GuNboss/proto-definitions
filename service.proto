@@ -242,14 +242,88 @@ message Configuration {
 }
 
 
+/** https://cwmp-data-models.broadband-forum.org/cwmp-datamodel-1-14.xsd:123
+    <xs:simpleType name="BuiltinTypeName">
+        <xs:annotation>
+            <xs:documentation>
+                Built-in type name.
+                The type hierarchy is as for XML Schema, with "any" and "base64" mapping to the "anySimpleType" and "base64Binary" XML Schema types respectively.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="tns:String">
+            <xs:enumeration value="any"/>
+            <xs:enumeration value="base64"/>
+            <xs:enumeration value="boolean"/>
+            <xs:enumeration value="dateTime"/>
+            <xs:enumeration value="decimal"/>
+            <xs:enumeration value="hexBinary"/>
+            <xs:enumeration value="integer"/>
+            <xs:enumeration value="int"/>
+            <xs:enumeration value="long"/>
+            <xs:enumeration value="string"/>
+            <xs:enumeration value="unsignedInt"/>
+            <xs:enumeration value="unsignedLong"/>
+        </xs:restriction>
+    </xs:simpleType>
+  */
+enum TYPE_CWMP_BUILTIN {
+    base64          = 0x01;
+    boolean         = 0x02;
+    dateTime        = 0x03;
+    decimal         = 0x04;
+    hexBinary       = 0x05;
+    integer         = 0x06;
+    int             = 0x07;
+    long            = 0x08;
+    string          = 0x09;
+    unsignedInt     = 0x0A;
+    unsignedLong    = 0x0B;
+}
+
+enum TYPE_YANG_BUILTIN {
+    string          = 0x01;
+    boolean         = 0x02;
+    enumeration     = 0x03;
+    bits            = 0x04;
+    binary          = 0x05;
+    empty           = 0x06;
+    int8            = 0x11;
+    int16           = 0x12;
+    int32           = 0x14;
+    int64           = 0x18;
+    uint8           = 0x21;
+    uint16          = 0x22;
+    uint32          = 0x24;
+    uint64          = 0x28;
+    decimal64       = 0x38;
+}
+
 message Type {
     map<string,string> labels   = 1001;
     map<string,string> extra    = 1111;
-    string id = 1;
+    string  id      = 1;
+    bool    config  = 2;
+    string  default = 3;
+    string  units   = 4;
+    string  range   = 5;
+    string  length  = 6;
+    string  pattern = 7;
+    string  description = 8;
+
+    repeated TypeEnum enums = 10;
+
+    oneof type_native {
+        TYPE_CWMP_BUILTIN    type_cwmp  = 101;
+        TYPE_YANG_BUILTIN    type_yang  = 102;
+    }
 
     /// Type Identifier
     message TypeID {
         string id = 1;
+    }
+    message TypeEnum {
+        string name = 1;
+        string value = 2;
     }
 }
 
